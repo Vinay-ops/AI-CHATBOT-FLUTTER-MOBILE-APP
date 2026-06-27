@@ -137,7 +137,67 @@ setState(() {
 
 ---
 
-## ❓ 5. Common Troubleshooting (For Beginners)
+## 🗺️ 5. Visualizing the "Digital Box" (JSON Response)
+
+When the AI replies, it sends a big box of data. It looks like this:
+
+```json
+{
+  "id": "gen-12345",
+  "model": "deepseek/deepseek-chat-v3",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Hello! How can I help you today?"
+      }
+    }
+  ],
+  "usage": {
+    "total_tokens": 42
+  }
+}
+```
+
+Our code acts like a **Laser-Guided Crane**:
+1. It ignores everything else.
+2. It goes into `"choices"`.
+3. It takes the first item `[0]`.
+4. It finds `"message"`.
+5. It grabs the `"content"`.
+
+---
+
+## 🏗️ 6. The "Brain Initialization" (`main.dart`)
+
+Before the app even shows the chat, it has to prepare itself.
+
+```dart
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  runApp(const MyApp());
+}
+```
+
+*   **`WidgetsFlutterBinding.ensureInitialized()`**: This is like the app drinking its morning coffee. It makes sure everything is ready before it tries to start.
+*   **`await dotenv.load(...)`**: This tells the app to go find the secret safe (`.env`) and open it immediately so we have our API keys ready.
+
+---
+
+## 📘 7. Glossary of "Scary Words"
+
+*   **API**: A bridge between two apps.
+*   **Async**: Something that takes time (like the internet).
+*   **Await**: Telling the code to be patient.
+*   **Boolean**: A simple `true` or `false` switch.
+*   **JSON**: A way to write data so computers can read it.
+*   **Package**: A "Toolbox" created by other developers that we use in our app (like `http` or `flutter_dotenv`).
+*   **State**: What the user sees on the screen right now.
+
+---
+
+## ❓ 8. Common Troubleshooting (For Beginners)
 
 **Q: Why is my chat empty?**
 *   **A**: Check your `.env` file. If the API key is wrong or missing, the server will ignore you.
