@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
 import 'api/api.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -52,14 +51,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
     scrollToBottom();
 
-    // Dummy AI Reply
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Actual AI Reply from ApiService
+      String response = await apiService.sendMessage(text);
 
-    setState(() {
-      messages.add({"text": "Hello 👋 I received: $text", "isUser": false});
-
-      isLoading = false;
-    });
+      setState(() {
+        messages.add({"text": response, "isUser": false});
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        messages.add({"text": "Error: Could not reach AI", "isUser": false});
+        isLoading = false;
+      });
+    }
 
     scrollToBottom();
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'SplashScreen.dart';
+import 'splash_screen.dart';
 
 Future<void> main() async {
 
