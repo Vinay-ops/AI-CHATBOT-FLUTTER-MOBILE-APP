@@ -42,3 +42,66 @@ The app takes that text and adds a new bubble to the chat list. It stops the loa
 
 ## 4. Why OpenRouter?
 We use OpenRouter because it acts as a bridge to many powerful AI models (like DeepSeek). It allows our app to be very smart without needing a huge server of its own!
+
+---
+
+## 5. Technical Deep Dive (The Code) 💻
+
+For the developers, here is how the magic happens in the code.
+
+### A. The API Service (`lib/api/api.dart`)
+This is the core class that handles the network communication.
+
+```dart
+// 1. We create the request
+final response = await http.post(
+  Uri.parse(url),
+  headers: {
+    "Authorization": "Bearer $apiKey", // Our secret key
+    "Content-Type": "application/json",
+  },
+  body: jsonEncode({
+    "model": "deepseek/deepseek-chat-v3", // Choosing the AI model
+    "messages": [
+      {"role": "user", "content": message} // Your message
+    ]
+  }),
+);
+
+// 2. We check if it worked
+if (response.statusCode == 200) {
+  final data = jsonDecode(response.body);
+  return data["choices"][0]["message"]["content"]; // Extracting AI text
+}
+```
+
+### B. Calling the Service (`lib/chat_screen.dart`)
+Inside our UI, we call the service and update the screen.
+
+```dart
+Future<void> sendMessage() async {
+  String text = messageController.text.trim();
+  
+  // Show user message immediately
+  setState(() {
+    messages.add({"text": text, "isUser": true});
+    isLoading = true; 
+  });
+
+  // Call the AI Service
+  String response = await apiService.sendMessage(text);
+
+  // Show AI message and stop loading
+  setState(() {
+    messages.add({"text": response, "isUser": false});
+    isLoading = false;
+  });
+}
+```
+
+### C. Security with `.env`
+We never hardcode the API Key. We load it from a file that is ignored by Git to keep it safe.
+```dart
+// In lib/api/api.dart
+final String apiKey = dotenv.env["OPENROUTER_API_KEY"] ?? "";
+```
